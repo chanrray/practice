@@ -1,6 +1,6 @@
 import java.util.Scanner;
 import java.util.Random;
-public class shuangseqiu{
+public class DoubleColorBall{
 public static void main(String[] args){
 	int[] winArr=creatNumber();
 /*	System.out.println("==================");
@@ -75,18 +75,18 @@ public static int[] countWinNumber(int[] winArr,int[] userInputArr){
 	int redCount=0;
 	int blueCount=0;
 	int arr[]=new int[2];
+	//redNumber
 	for(int i=0;i<userInputArr.length-1;i++){
-		int redNumber=userInputArr[i];
-		for(int j=0;j<userInputArr.length-1;j++){
-			if(redNumber==winArr[j]){
+		for(int j=0;j<winArr.length-1;j++){
+			if(userInputArr[i]==winArr[j]){
 				redCount++;
 				break;
 			}
 		}
 	}
-	int blueNumber=userInputArr[userInputArr.length-1];
-		if(blueNumber==winArr[winArr.length-1]){
-			blueCount++;
+	//blueNumber
+	if(userInputArr[userInputArr.length-1]==winArr[winArr.length-1]){
+		blueCount++;
 		}
 	arr[0]=redCount;
 	arr[1]=blueCount;
