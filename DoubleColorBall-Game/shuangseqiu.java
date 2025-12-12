@@ -3,16 +3,24 @@ import java.util.Random;
 public class shuangseqiu{
 public static void main(String[] args){
 	int[] winArr=creatNumber();
-	System.out.println("========");
+/*	System.out.println("==================");
 	for(int i=0;i<winArr.length;i++){
 		System.out.print(winArr[i]+" ");
 	}
 	System.out.print("\n");
-	System.out.println("========");
+	System.out.println("==================");*/
 	int[] userInputArr=userInputNumber();
-	int[] countWinArr=countWinNumber(winArr,userInputArr);
-	System.out.println("红球中奖数量"+countWinArr[0]+"\n"+"蓝球中奖数量"+countWinArr[1]);
-
+//	int[] countWinArr=countWinNumber(winArr,userInputArr);
+//	System.out.println("红球中奖数量"+countWinArr[0]+"\n"+"蓝球中奖数量"+countWinArr[1]);
+	switch(prizeResult(countWinNumber(winArr,userInputArr))){
+		case 1->System.out.println("恭喜您中了一等奖，奖金最高为1000万元");
+		case 2->System.out.println("恭喜您中了二等奖，奖金最高为500万元");
+		case 3->System.out.println("恭喜您中了三等奖，奖金为3000元");
+		case 4->System.out.println("恭喜您中了四等奖，奖金为200元");
+		case 5->System.out.println("恭喜您中了五等奖，奖金为10元");
+		case 6->System.out.println("恭喜您中了六等奖，奖金为5元");
+		case 0->System.out.println("谢谢参与");
+	}
 }
 public static int[] creatNumber(){
 	int[] arr=new int[7];
@@ -84,5 +92,13 @@ public static int[] countWinNumber(int[] winArr,int[] userInputArr){
 	arr[1]=blueCount;
 	return arr;
 }
-
+public static int prizeResult(int[] countWinArr){
+	if(countWinArr[0]==6&&countWinArr[1]==1){return 1;}
+	else if(countWinArr[0]==6&&countWinArr[1]==0){return 2;}
+	else if(countWinArr[0]==5&&countWinArr[1]==1){return 3;}
+	else if((countWinArr[0]==5&&countWinArr[1]==0)||(countWinArr[0]==4&&countWinArr[1]==1)){return 4;}
+	else if((countWinArr[0]==4&&countWinArr[1]==0)||(countWinArr[0]==3&&countWinArr[1]==1)){return 5;}
+	else if((countWinArr[0]==2&&countWinArr[1]==1)||(countWinArr[0]==1&&countWinArr[1]==1)||(countWinArr[0]==0&&countWinArr[1]==1)){return 6;}
+	else{return 0;}
+}
 }
