@@ -3,11 +3,12 @@ import java.util.Scanner;
 import java.util.ArrayList;
 public class StudentManageSystem{
 	public static void main(String[] args){
+		Scanner sc = new Scanner(System.in);
 		ArrayList<Student> studentList = new ArrayList<>();
 		consoleLoop: while (true){
 			System.out.println("--------Welecome to Student Management System--------");
 			System.out.println("1.Add Student\n2.Delete Student\n3.Modify Student\n4.Show All Student\n5.Exit\nPlease Input Your Option Number");
-			String choose = new Scanner(System.in).next(); 
+			String choose = sc.next(); 
 			switch(choose){
 				case "1" -> addStudent(studentList);
 				case "2" -> deleteStudent(studentList);
@@ -65,8 +66,7 @@ public class StudentManageSystem{
 		stu.setAge(sc.nextInt());
 		System.out.println("Please input new student address:");
 		stu.setAddress(sc.next());
-		System.out.println("Id:"+id+" Modified successfull\n");
-		
+		System.out.println("Id:"+id+" Modified successfull\n");	
 	}
 	
 	public static void queryStudent(ArrayList<Student> studentList){
@@ -81,7 +81,7 @@ public class StudentManageSystem{
 	}
 	
 	public static boolean contains(ArrayList<Student> studentList,String id){
-		return getIndex(studentList,id) >=0;
+		return getIndex(studentList,id) >= 0;
 	}
 	
 	public static int getIndex(ArrayList<Student> studentList,String id){
