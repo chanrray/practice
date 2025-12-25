@@ -13,7 +13,7 @@ public class App{
 				//case "1" -> login(userList);
 				case "2" -> singup(userList);
 				//case "3" -> resetPassword(userList);
-				case "4" -> {System.out.println("Thank for using,goodbye!");System.exit(0);}
+				case "4" -> {System.out.println("Thanks for using,goodbye!");System.exit(0);}
 				default -> System.out.println("Wrong Option!");
 			}
 		}	
@@ -27,7 +27,7 @@ public class App{
 		String username,password,pinCode,phoneNumber;
 		Scanner sc = new Scanner(System.in);
 		while (true){
-			System.out.println("Please enter a new username:(8-16,letter+digit)");
+			System.out.println("Please enter a new username:(8-16 characters,letter+digit)");
 			username = sc.next();
 			if(!checkUsername(username)){
 				System.out.println("Username format incorrect!");
@@ -40,7 +40,7 @@ public class App{
 		while (true){//password format no check.Take a break~
 			System.out.println("Please enter password:");
 			password = sc.next();
-			System.out.println("Please re-enter password:");
+			System.out.println("Please re-enter password:(+86 chinese format)");
 			String againPassword = sc.next();
 			if(!password.equals(againPassword)){
 				System.out.println("Password does not match!Please reinput.");
@@ -112,7 +112,7 @@ public class App{
 		if (phoneNumber.length() != 11){
 			return false;
 		}
-		if(phoneNumber.startsWith("0")){
+		if(!phoneNumber.startsWith("1")){
 			return false;
 		}
 		for (int i=0;i < phoneNumber.length();i++){
