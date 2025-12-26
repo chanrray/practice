@@ -40,7 +40,7 @@ public class App{
 		while (true){//password format no check.Take a break~
 			System.out.println("Please enter password:");
 			password = sc.next();
-			System.out.println("Please re-enter password:(+86 chinese format)");
+			System.out.println("Please re-enter password:");
 			String againPassword = sc.next();
 			if(!password.equals(againPassword)){
 				System.out.println("Password does not match!Please reinput.");
@@ -54,7 +54,7 @@ public class App{
 			}else{break;}
 		}
 		while (true){
-			System.out.println("Please enter phoneNumber:");
+			System.out.println("Please enter phoneNumber:(+86 chinese format)");
 			phoneNumber = sc.next();
 			if(!checkPhoneNumber(phoneNumber)){
 				System.out.println("Phone number format incorrect!Please reinput.");
