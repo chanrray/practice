@@ -4,6 +4,7 @@ public class User{
 	private String password;
 	private String pinCode;
 	private String phoneNumber;
+	private int attemptsNum;
 	
 	public User(){}
 	public User(String username,String password,String pinCode,String phoneNumber){
@@ -36,5 +37,11 @@ public class User{
 	}
 	public void setPhoneNumber(String phoneNumber){
 		this.phoneNumber = phoneNumber;
+	}
+	public int getAttemptsNum(){
+		return attemptsNum;
+	}
+	public void setAttemptsNum(int attemptsNum){
+		this.attemptsNum = attemptsNum;
 	}
 }

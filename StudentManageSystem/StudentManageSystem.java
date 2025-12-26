@@ -6,7 +6,7 @@ public class StudentManageSystem{
 		Scanner sc = new Scanner(System.in);
 		ArrayList<Student> studentList = new ArrayList<>();
 		consoleLoop: while (true){
-			System.out.println("--------Welecome to Student Management System--------");
+			System.out.println("--------Menu List--------");
 			System.out.println("1.Add Student\n2.Delete Student\n3.Modify Student\n4.Show All Student\n5.Exit\nPlease Input Your Option Number");
 			String choose = sc.next(); 
 			switch(choose){
