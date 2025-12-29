@@ -8,7 +8,7 @@ public class App{
 		ArrayList<User> userList = new ArrayList<>();
 		while (true){
 			System.out.println("--------Welecome to Student Management System--------");
-			System.out.println("1.Login\n2.Singup\n3.Forgot Password\n4.Exit\nPlease Input Your Option Number");
+			System.out.println("1.Login\n2.Singup\n3.Reset Password\n4.Exit\nPlease Input Your Option Number");
 			String choose = sc.next(); 
 			switch(choose){
 				case "1" -> login(userList);
@@ -49,6 +49,7 @@ public class App{
 			if(password.equals(userList.get(index).getPassword())){
 				userList.get(index).setAttemptsNum(0);
 				System.out.println("Login successful!\n");
+				new StudentManageSystem().startManagement();
 				break;
 			}else{
 				int attemps = userList.get(index).getAttemptsNum()+1;
@@ -118,10 +119,27 @@ public class App{
 		System.out.println("Please enter your phoneNumber:");
 		String phoneNumber = sc.next();
 		if(!(pinCode.equals(userList.get(index).getPinCode()) && phoneNumber.equals(userList.get(index).getPhoneNumber()))){
-			System.out.println("User information doesn't match.\n");
+			System.out.println("User information doesn't match.Please contact administrator.\n");
 			return;
 		}
-		
+		while(true){
+			System.out.println("Please enter your new password:");
+			String password = sc.next();
+			System.out.println("Please enter your new password again:");
+			String againPassword = sc.next();
+			if(!password.equals(againPassword)){
+				System.out.println("Password does not match!Please reinput.");
+				continue;
+			}
+			if(password.equals(userList.get(index).getPassword())){
+				System.out.println("The new password cannot be the same as the old one.");
+				continue;
+			}
+			userList.get(index).setPassword(password);
+			userList.get(index).setAttemptsNum(0);
+			System.out.println("Password reset successful!\n");
+			break;
+		}
 	}
 	
 	private static boolean checkUsername(String username){

@@ -2,7 +2,7 @@ package com.practice.test3;
 import java.util.Scanner;
 import java.util.ArrayList;
 public class StudentManageSystem{
-	public static void main(String[] args){
+	public static void startManagement(){
 		Scanner sc = new Scanner(System.in);
 		ArrayList<Student> studentList = new ArrayList<>();
 		consoleLoop: while (true){
@@ -14,7 +14,7 @@ public class StudentManageSystem{
 				case "2" -> deleteStudent(studentList);
 				case "3" -> updateStudent(studentList);
 				case "4" -> queryStudent(studentList);
-				case "5" -> {System.out.println("Exited!");break consoleLoop;}
+				case "5" -> {System.out.println("Exited!\n");break consoleLoop;}
 				default -> System.out.println("Wrong Option!");
 			}
 		}	
