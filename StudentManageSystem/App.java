@@ -49,7 +49,7 @@ public class App{
 			if(password.equals(userList.get(index).getPassword())){
 				userList.get(index).setAttemptsNum(0);
 				System.out.println("Login successful!\n");
-				new StudentManageSystem().startManagement();
+				StudentManageSystem.startManagement();
 				break;
 			}else{
 				int attemps = userList.get(index).getAttemptsNum()+1;

@@ -2,6 +2,8 @@ package com.practice.test3;
 import java.util.Scanner;
 import java.util.ArrayList;
 public class StudentManageSystem{
+	private StudentManageSystem(){}
+	
 	public static void startManagement(){
 		Scanner sc = new Scanner(System.in);
 		ArrayList<Student> studentList = new ArrayList<>();
@@ -19,7 +21,8 @@ public class StudentManageSystem{
 			}
 		}	
 	}
-	public static void addStudent(ArrayList<Student> studentList){
+	
+	private static void addStudent(ArrayList<Student> studentList){
 		Scanner sc = new Scanner(System.in);
 		Student stu = new Student();
 		String id = null;
@@ -40,7 +43,7 @@ public class StudentManageSystem{
 		System.out.println("Added successfull\n");
 	}
 	
-	public static void deleteStudent(ArrayList<Student> studentList){
+	private static void deleteStudent(ArrayList<Student> studentList){
 		System.out.println("Please enter the id you want to delete:");
 		String id = new Scanner(System.in).next();
 		int index = getIndex(studentList,id);
@@ -50,7 +53,7 @@ public class StudentManageSystem{
 		}else{System.out.println("Id does not exist,deletion failed\n");}
 	}
 	
-	public static void updateStudent(ArrayList<Student> studentList){
+	private static void updateStudent(ArrayList<Student> studentList){
 		System.out.println("Please enter the id you want to modify:");
 		Scanner sc = new Scanner(System.in);
 		String id = sc.next();
@@ -69,7 +72,7 @@ public class StudentManageSystem{
 		System.out.println("Id:"+id+" Modified successfull\n");	
 	}
 	
-	public static void queryStudent(ArrayList<Student> studentList){
+	private static void queryStudent(ArrayList<Student> studentList){
 		System.out.println("Show All Student:");
 		if(studentList.size() == 0){System.out.println("No students! Please add first.\n");return;}
 		System.out.printf("%-10s %-15s %-8s %-20s%n", "id", "name", "age", "address");
@@ -80,11 +83,11 @@ public class StudentManageSystem{
 		System.out.println();
 	}
 	
-	public static boolean contains(ArrayList<Student> studentList,String id){
+	private static boolean contains(ArrayList<Student> studentList,String id){
 		return getIndex(studentList,id) >= 0;
 	}
 	
-	public static int getIndex(ArrayList<Student> studentList,String id){
+	private static int getIndex(ArrayList<Student> studentList,String id){
 		for(int i=0;i<studentList.size();i++){
 			if(studentList.get(i).getId().equals(id)){
 				return i;
