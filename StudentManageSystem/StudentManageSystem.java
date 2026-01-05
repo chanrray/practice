@@ -2,6 +2,12 @@ package com.practice.test3;
 import java.util.Scanner;
 import java.util.ArrayList;
 public class StudentManageSystem{
+	private static final String ADD_STUDENT = "1";
+	private static final String DELETE_STUDENT = "2";
+	private static final String UPDATE_STUDENT = "3";
+	private static final String QUERY_STUDENT = "4";
+	private static final String EXIT = "5";
+	
 	private StudentManageSystem(){}
 	
 	public static void startManagement(){
@@ -12,11 +18,11 @@ public class StudentManageSystem{
 			System.out.println("1.Add Student\n2.Delete Student\n3.Modify Student\n4.Show All Student\n5.Exit\nPlease Input Your Option Number");
 			String choose = sc.next(); 
 			switch(choose){
-				case "1" -> addStudent(studentList);
-				case "2" -> deleteStudent(studentList);
-				case "3" -> updateStudent(studentList);
-				case "4" -> queryStudent(studentList);
-				case "5" -> {System.out.println("Exited!\n");break consoleLoop;}
+				case ADD_STUDENT -> addStudent(studentList);
+				case DELETE_STUDENT -> deleteStudent(studentList);
+				case UPDATE_STUDENT -> updateStudent(studentList);
+				case QUERY_STUDENT -> queryStudent(studentList);
+				case EXIT -> {System.out.println("Exited!\n");break consoleLoop;}
 				default -> System.out.println("Wrong Option!");
 			}
 		}	
