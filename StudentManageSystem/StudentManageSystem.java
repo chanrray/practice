@@ -7,12 +7,12 @@ public class StudentManageSystem{
 	private static final String UPDATE_STUDENT = "3";
 	private static final String QUERY_STUDENT = "4";
 	private static final String EXIT = "5";
+	private static ArrayList<Student> studentList = new ArrayList<>();
 	
 	private StudentManageSystem(){}
 	
 	public static void startManagement(){
 		Scanner sc = new Scanner(System.in);
-		ArrayList<Student> studentList = new ArrayList<>();
 		consoleLoop: while (true){
 			System.out.println("--------Menu List--------");
 			System.out.println("1.Add Student\n2.Delete Student\n3.Modify Student\n4.Show All Student\n5.Exit\nPlease Input Your Option Number");
