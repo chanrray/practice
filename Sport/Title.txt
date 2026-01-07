@@ -1,0 +1,4 @@
+Table tennis player:name,age,learn to play table tennis,speak English
+Basketball player:name,age,learn to play basketball
+Table tennis coach:name,age,teaching table tennis,speak English
+Basketball coach:name,age,teaching basketball
