@@ -7,8 +7,10 @@ import java.awt.event.*;
 
 public class GameJFrame extends JFrame implements KeyListener{
 	int[][] imageNumberArr = new int[4][4];
+	int[][] winArr = new int[4][4];
 	int indexX=0;//Blank square position
 	int indexY=0;
+	String path = "./images/animal/animal1/";
 	
 	public GameJFrame(){
 		initJFrame();
@@ -55,7 +57,9 @@ public class GameJFrame extends JFrame implements KeyListener{
 		int[] tempArr = new int[16];
 		for (int i=0;i<tempArr.length;i++){
 			tempArr[i]=i;
+			winArr[i / 4][i % 4] = i+1;
 		}
+		winArr[3][3] = 0;
 		Random r = new Random();
 		for (int i=0;i<tempArr.length;i++){
 			int index = r.nextInt(tempArr.length);
@@ -75,9 +79,14 @@ public class GameJFrame extends JFrame implements KeyListener{
 	
 	private void initImage(){
 		this.getContentPane().removeAll();
+		if(chechWin()){
+			JLabel winJLable = new JLabel(new ImageIcon("./images/win.png"));
+			winJLable.setBounds(203,283,197,73);
+			this.getContentPane().add(winJLable);
+		}
 		for (int y=0;y<4;y++){
 			for (int x=0;x<4;x++){
-			JLabel jlb = new JLabel(new ImageIcon("./images/animal/animal1/"+imageNumberArr[y][x]+".jpg"));
+			JLabel jlb = new JLabel(new ImageIcon(path+imageNumberArr[y][x]+".jpg"));
 			jlb.setBounds(105*x+83,105*y+134,105,105);
 			jlb.setBorder(new BevelBorder(1));
 			this.getContentPane().add(jlb);
@@ -89,6 +98,17 @@ public class GameJFrame extends JFrame implements KeyListener{
 		this.getContentPane().repaint();
 	}
 	
+	public boolean chechWin(){
+		for (int y=0;y<imageNumberArr.length;y++){
+			for(int x=0;x<imageNumberArr[y].length;x++){
+				if (imageNumberArr[y][x] != winArr[y][x]){
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
  	@Override
 	public void keyTyped(KeyEvent e){
 		
@@ -96,11 +116,23 @@ public class GameJFrame extends JFrame implements KeyListener{
 	
 	@Override
 	public void keyPressed(KeyEvent e){
-		
+		if(e.getKeyCode()==65){
+			this.getContentPane().removeAll();
+			JLabel all = new JLabel(new ImageIcon(path+"all.jpg"));
+			all.setBounds(83,134,420,420);
+			this.getContentPane().add(all);
+			JLabel background = new JLabel(new ImageIcon("./images/background.png"));
+			background.setBounds(40,40,508,560);
+			this.getContentPane().add(background);
+			this.getContentPane().repaint();
+		}
 	}
 	
 	@Override
 	public void keyReleased(KeyEvent e){
+		if(chechWin){
+			return;
+		}
 		switch (e.getKeyCode()){//left:37 up:38 right:39 down:40
 			case 37 -> {
 				if (indexX == 0){
@@ -126,6 +158,9 @@ public class GameJFrame extends JFrame implements KeyListener{
 				}
 				imageNumberArr[indexY][indexX]=imageNumberArr[indexY+1][indexX];imageNumberArr[indexY+1][indexX]=0;indexY++;initImage();
 				}
+			case 65 -> {
+				initImage();
+			}
 		}
 	}
 }
