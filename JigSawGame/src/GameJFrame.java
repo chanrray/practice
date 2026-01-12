@@ -2,9 +2,13 @@ package com.practice.test5.ui;
 
 import java.util.Random;
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
+import java.awt.event.*;
 
-public class GameJFrame extends JFrame{
+public class GameJFrame extends JFrame implements KeyListener{
 	int[][] imageNumberArr = new int[4][4];
+	int indexX=0;//Blank square position
+	int indexY=0;
 	
 	public GameJFrame(){
 		initJFrame();
@@ -21,6 +25,7 @@ public class GameJFrame extends JFrame{
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(3);
 		this.setLayout(null);
+		this.addKeyListener(this);
 	}
 	
 	private void initJFrameBar(){
@@ -59,17 +64,68 @@ public class GameJFrame extends JFrame{
 			tempArr[i] = temp;
 		}
 		for (int i=0;i<tempArr.length;i++){
-			imageNumberArr[i / 4][i % 4] = tempArr[i];
+			if(tempArr[i]==0){
+				indexY=i/4;
+				indexX=i%4;
+			}else{
+				imageNumberArr[i / 4][i % 4] = tempArr[i];
+			}
 		}
 	}
 	
 	private void initImage(){
-	for (int y=0;y<4;y++){
-		for (int x=0;x<4;x++){
-		JLabel jlb = new JLabel(new ImageIcon("./images/animal/animal1/"+imageNumberArr[y][x]+".jpg"));
-		jlb.setBounds(105*x,105*y,105,105);
-		this.getContentPane().add(jlb);
+		this.getContentPane().removeAll();
+		for (int y=0;y<4;y++){
+			for (int x=0;x<4;x++){
+			JLabel jlb = new JLabel(new ImageIcon("./images/animal/animal1/"+imageNumberArr[y][x]+".jpg"));
+			jlb.setBounds(105*x+83,105*y+134,105,105);
+			jlb.setBorder(new BevelBorder(1));
+			this.getContentPane().add(jlb);
 			}
+		}
+		JLabel background = new JLabel(new ImageIcon("./images/background.png"));
+		background.setBounds(40,40,508,560);
+		this.getContentPane().add(background);
+		this.getContentPane().repaint();
+	}
+	
+ 	@Override
+	public void keyTyped(KeyEvent e){
+		
+	}
+	
+	@Override
+	public void keyPressed(KeyEvent e){
+		
+	}
+	
+	@Override
+	public void keyReleased(KeyEvent e){
+		switch (e.getKeyCode()){//left:37 up:38 right:39 down:40
+			case 37 -> {
+				if (indexX == 0){
+					return;
+				}
+				imageNumberArr[indexY][indexX]=imageNumberArr[indexY][indexX-1];imageNumberArr[indexY][indexX-1]=0;indexX--;initImage();
+				}
+			case 38 -> {
+				if (indexY == 0){
+					return;
+				}
+				imageNumberArr[indexY][indexX]=imageNumberArr[indexY-1][indexX];imageNumberArr[indexY-1][indexX]=0;indexY--;initImage();
+				}
+			case 39 -> {
+				if (indexX == 3){
+					return;
+				}
+				imageNumberArr[indexY][indexX]=imageNumberArr[indexY][indexX+1];imageNumberArr[indexY][indexX+1]=0;indexX++;initImage();
+				}
+			case 40 -> {
+				if (indexY == 3){
+					return;
+				}
+				imageNumberArr[indexY][indexX]=imageNumberArr[indexY+1][indexX];imageNumberArr[indexY+1][indexX]=0;indexY++;initImage();
+				}
 		}
 	}
 }
