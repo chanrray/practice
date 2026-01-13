@@ -34,7 +34,7 @@ public class GameJFrame extends JFrame implements KeyListener,ActionListener{
 	
 	private void initJFrame(){
 		this.setSize(603,680);
-		this.setTitle("Puzzle Game V1.0");
+		this.setTitle("Puzzle Game V1.1");
 		this.setAlwaysOnTop(true);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(3);
