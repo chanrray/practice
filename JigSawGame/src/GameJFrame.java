@@ -11,6 +11,8 @@ public class GameJFrame extends JFrame implements KeyListener{
 	int indexX=0;//Blank square position
 	int indexY=0;
 	String path = "./images/animal/animal1/";
+	int inversions = 0;
+	int blankFromBottom = -1;
 	
 	public GameJFrame(){
 		initJFrame();
@@ -67,6 +69,30 @@ public class GameJFrame extends JFrame implements KeyListener{
 			tempArr[index] = tempArr[i];
 			tempArr[i] = temp;
 		}
+		
+		for (int i = 0; i < tempArr.length; i++) {
+			if (tempArr[i] == 0) {
+				blankFromBottom = 4-(i/4);
+			} else {
+				for (int j = i + 1; j < tempArr.length; j++) {
+					if (tempArr[j] != 0 && tempArr[i] > tempArr[j]) {
+                    inversions++;
+					}
+				}
+			}
+		}
+		
+		if ((blankFromBottom % 2)==(inversions % 2)){//Unsolvable situation
+			int temp1,temp2;
+			do {
+				temp1 = r.nextInt(16);
+				temp2 = r.nextInt(16);
+			} while (temp1 == temp2 || tempArr[temp1] == 0 || tempArr[temp2] == 0);
+			int temp = tempArr[temp1];
+			tempArr[temp1] = tempArr[temp2];
+			tempArr[temp2] = temp;
+		}
+		
 		for (int i=0;i<tempArr.length;i++){
 			if(tempArr[i]==0){
 				indexY=i/4;
@@ -75,6 +101,7 @@ public class GameJFrame extends JFrame implements KeyListener{
 				imageNumberArr[i / 4][i % 4] = tempArr[i];
 			}
 		}
+
 	}
 	
 	private void initImage(){
@@ -116,6 +143,9 @@ public class GameJFrame extends JFrame implements KeyListener{
 	
 	@Override
 	public void keyPressed(KeyEvent e){
+		if(chechWin()){
+			return;
+		}
 		if(e.getKeyCode()==65){
 			this.getContentPane().removeAll();
 			JLabel all = new JLabel(new ImageIcon(path+"all.jpg"));
@@ -130,7 +160,7 @@ public class GameJFrame extends JFrame implements KeyListener{
 	
 	@Override
 	public void keyReleased(KeyEvent e){
-		if(chechWin){
+		if(chechWin()){
 			return;
 		}
 		switch (e.getKeyCode()){//left:37 up:38 right:39 down:40
