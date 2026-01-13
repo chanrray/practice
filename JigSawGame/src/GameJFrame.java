@@ -5,7 +5,7 @@ import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import java.awt.event.*;
 
-public class GameJFrame extends JFrame implements KeyListener{
+public class GameJFrame extends JFrame implements KeyListener,ActionListener{
 	int[][] imageNumberArr = new int[4][4];
 	int[][] winArr = new int[4][4];
 	int indexX=0;//Blank square position
@@ -13,10 +13,20 @@ public class GameJFrame extends JFrame implements KeyListener{
 	String path = "./images/animal/animal1/";
 	int inversions = 0;
 	int blankFromBottom = -1;
+	int step = 0;
+	Random r = new Random();
+	
+	JMenuItem replayItem = new JMenuItem("Replay");
+	//JMenuItem reLoginItem = new JMenuItem("Relogin");
+	JMenuItem closeItem = new JMenuItem("Close game");
+	JMenuItem aboutItem = new JMenuItem("About me");
+	JMenuItem changeAnimal = new JMenuItem("Animals");
+	JMenuItem changeGirl = new JMenuItem("Girls");
+	JMenuItem changeSport = new JMenuItem("Sports");
 	
 	public GameJFrame(){
 		initJFrame();
-		initJFrameBar();
+		initJMenuBar();
 		initImageNumber();
 		initImage();
 		this.setVisible(true);
@@ -32,25 +42,29 @@ public class GameJFrame extends JFrame implements KeyListener{
 		this.addKeyListener(this);
 	}
 	
-	private void initJFrameBar(){
+	private void initJMenuBar(){
 		JMenuBar jmb = new JMenuBar();
 		JMenu fuctionMenu = new JMenu("Menu");
+		JMenu changeImage = new JMenu("Change image");
 		JMenu aboutMenu = new JMenu("About");
-		
-		JMenuItem replayItem = new JMenuItem("Replay");
-		JMenuItem reLoginItem = new JMenuItem("Relogin");
-		JMenuItem closeItem = new JMenuItem("Close game");
-		
-		JMenuItem aboutItem = new JMenuItem("About me");
-		
 		jmb.add(fuctionMenu);
 		jmb.add(aboutMenu);
 		
+		fuctionMenu.add(changeImage);
+		changeImage.add(changeAnimal);
+		changeImage.add(changeGirl);
+		changeImage.add(changeSport);
 		fuctionMenu.add(replayItem);
-		fuctionMenu.add(reLoginItem);
+		//fuctionMenu.add(reLoginItem);
 		fuctionMenu.add(closeItem);
+		changeAnimal.addActionListener(this);changeAnimal.setActionCommand("changeAnimal");
+		changeGirl.addActionListener(this);changeGirl.setActionCommand("changeGirl");
+		changeSport.addActionListener(this);changeSport.setActionCommand("changeSport");
+		replayItem.addActionListener(this);replayItem.setActionCommand("replay");
+		closeItem.addActionListener(this);closeItem.setActionCommand("close");
 		
 		aboutMenu.add(aboutItem);
+		aboutItem.addActionListener(this);aboutItem.setActionCommand("about");
 		
 		this.setJMenuBar(jmb);
 	}
@@ -62,7 +76,6 @@ public class GameJFrame extends JFrame implements KeyListener{
 			winArr[i / 4][i % 4] = i+1;
 		}
 		winArr[3][3] = 0;
-		Random r = new Random();
 		for (int i=0;i<tempArr.length;i++){
 			int index = r.nextInt(tempArr.length);
 			int temp = tempArr[index];
@@ -97,15 +110,20 @@ public class GameJFrame extends JFrame implements KeyListener{
 			if(tempArr[i]==0){
 				indexY=i/4;
 				indexX=i%4;
-			}else{
-				imageNumberArr[i / 4][i % 4] = tempArr[i];
 			}
+			imageNumberArr[i / 4][i % 4] = tempArr[i];
 		}
 
 	}
 	
 	private void initImage(){
 		this.getContentPane().removeAll();
+		JLabel stepCount = new JLabel("Steps:" + step);
+		stepCount.setBounds(40,30,100,20);
+		this.getContentPane().add(stepCount);
+		JLabel tips = new JLabel("Press A to preview image.");
+		tips.setBounds(400,30,200,20);
+		this.getContentPane().add(tips);
 		if(chechWin()){
 			JLabel winJLable = new JLabel(new ImageIcon("./images/win.png"));
 			winJLable.setBounds(203,283,197,73);
@@ -168,28 +186,59 @@ public class GameJFrame extends JFrame implements KeyListener{
 				if (indexX == 0){
 					return;
 				}
-				imageNumberArr[indexY][indexX]=imageNumberArr[indexY][indexX-1];imageNumberArr[indexY][indexX-1]=0;indexX--;initImage();
+				imageNumberArr[indexY][indexX]=imageNumberArr[indexY][indexX-1];imageNumberArr[indexY][indexX-1]=0;indexX--;step++;initImage();
 				}
 			case 38 -> {
 				if (indexY == 0){
 					return;
 				}
-				imageNumberArr[indexY][indexX]=imageNumberArr[indexY-1][indexX];imageNumberArr[indexY-1][indexX]=0;indexY--;initImage();
+				imageNumberArr[indexY][indexX]=imageNumberArr[indexY-1][indexX];imageNumberArr[indexY-1][indexX]=0;indexY--;step++;initImage();
 				}
 			case 39 -> {
 				if (indexX == 3){
 					return;
 				}
-				imageNumberArr[indexY][indexX]=imageNumberArr[indexY][indexX+1];imageNumberArr[indexY][indexX+1]=0;indexX++;initImage();
+				imageNumberArr[indexY][indexX]=imageNumberArr[indexY][indexX+1];imageNumberArr[indexY][indexX+1]=0;indexX++;step++;initImage();
 				}
 			case 40 -> {
 				if (indexY == 3){
 					return;
 				}
-				imageNumberArr[indexY][indexX]=imageNumberArr[indexY+1][indexX];imageNumberArr[indexY+1][indexX]=0;indexY++;initImage();
+				imageNumberArr[indexY][indexX]=imageNumberArr[indexY+1][indexX];imageNumberArr[indexY+1][indexX]=0;indexY++;step++;initImage();
 				}
 			case 65 -> {
 				initImage();
+			}
+		}
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e){
+		switch (e.getActionCommand()){
+			case "replay" -> {step = 0;initImageNumber();initImage();}
+			case "close"  -> {System.exit(0);}
+			case "about"  -> {
+				JDialog jdl = new JDialog();
+				JLabel jlb = new JLabel(new ImageIcon("./images/about.png"));
+				jlb.setBounds(0,0,250,250);
+				jdl.getContentPane().add(jlb);
+				jdl.setSize(344,344);
+				jdl.setAlwaysOnTop(true);
+				jdl.setLocationRelativeTo(null);
+				jdl.setModal(true);
+				jdl.setVisible(true);
+			}
+			case "changeAnimal" -> {
+				path = "./images/animal/animal"+(r.nextInt(3)+1)+"/";
+				step = 0;initImageNumber();initImage();
+			}
+			case "changeGirl" -> {
+				path = "./images/girl/girl"+(r.nextInt(3)+1)+"/";
+				step = 0;initImageNumber();initImage();
+			}
+			case "changeSport" -> {
+				path = "./images/sport/sport"+(r.nextInt(3)+1)+"/";
+				step = 0;initImageNumber();initImage();
 			}
 		}
 	}
