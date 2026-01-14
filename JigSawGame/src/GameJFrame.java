@@ -10,7 +10,7 @@ public class GameJFrame extends JFrame implements KeyListener,ActionListener{
 	int[][] winArr = new int[4][4];
 	int indexX=0;//Blank square position
 	int indexY=0;
-	String path = "./images/animal/animal1/";
+	String path = "/images/animal/animal1/";
 	int inversions = 0;
 	int blankFromBottom = -1;
 	int step = 0;
@@ -125,19 +125,21 @@ public class GameJFrame extends JFrame implements KeyListener,ActionListener{
 		tips.setBounds(400,30,200,20);
 		this.getContentPane().add(tips);
 		if(chechWin()){
-			JLabel winJLable = new JLabel(new ImageIcon("./images/win.png"));
+			JLabel winJLable = new JLabel(new ImageIcon(getClass().getResource("/images/win.png")));
 			winJLable.setBounds(203,283,197,73);
 			this.getContentPane().add(winJLable);
 		}
 		for (int y=0;y<4;y++){
-			for (int x=0;x<4;x++){
-			JLabel jlb = new JLabel(new ImageIcon(path+imageNumberArr[y][x]+".jpg"));
+			for (int x=0;x<4;x++){	
+			JLabel jlb;
+			if(imageNumberArr[y][x]!=0){jlb = new JLabel(new ImageIcon(getClass().getResource(path+imageNumberArr[y][x]+".jpg")));}
+			else{jlb = new JLabel();}
 			jlb.setBounds(105*x+83,105*y+134,105,105);
 			jlb.setBorder(new BevelBorder(1));
 			this.getContentPane().add(jlb);
 			}
 		}
-		JLabel background = new JLabel(new ImageIcon("./images/background.png"));
+		JLabel background = new JLabel(new ImageIcon(getClass().getResource("/images/background.png")));
 		background.setBounds(40,40,508,560);
 		this.getContentPane().add(background);
 		this.getContentPane().repaint();
@@ -166,10 +168,10 @@ public class GameJFrame extends JFrame implements KeyListener,ActionListener{
 		}
 		if(e.getKeyCode()==65){
 			this.getContentPane().removeAll();
-			JLabel all = new JLabel(new ImageIcon(path+"all.jpg"));
+			JLabel all = new JLabel(new ImageIcon(getClass().getResource(path+"all.jpg")));
 			all.setBounds(83,134,420,420);
 			this.getContentPane().add(all);
-			JLabel background = new JLabel(new ImageIcon("./images/background.png"));
+			JLabel background = new JLabel(new ImageIcon(getClass().getResource("/images/background.png")));
 			background.setBounds(40,40,508,560);
 			this.getContentPane().add(background);
 			this.getContentPane().repaint();
@@ -219,7 +221,7 @@ public class GameJFrame extends JFrame implements KeyListener,ActionListener{
 			case "close"  -> {System.exit(0);}
 			case "about"  -> {
 				JDialog jdl = new JDialog();
-				JLabel jlb = new JLabel(new ImageIcon("./images/about.png"));
+				JLabel jlb = new JLabel(new ImageIcon(getClass().getResource("/images/about.png")));
 				jlb.setBounds(0,0,250,250);
 				jdl.getContentPane().add(jlb);
 				jdl.setSize(344,344);
@@ -229,15 +231,15 @@ public class GameJFrame extends JFrame implements KeyListener,ActionListener{
 				jdl.setVisible(true);
 			}
 			case "changeAnimal" -> {
-				path = "./images/animal/animal"+(r.nextInt(3)+1)+"/";
+				path = "/images/animal/animal"+(r.nextInt(3)+1)+"/";
 				step = 0;initImageNumber();initImage();
 			}
 			case "changeGirl" -> {
-				path = "./images/girl/girl"+(r.nextInt(3)+1)+"/";
+				path = "/images/girl/girl"+(r.nextInt(3)+1)+"/";
 				step = 0;initImageNumber();initImage();
 			}
 			case "changeSport" -> {
-				path = "./images/sport/sport"+(r.nextInt(3)+1)+"/";
+				path = "/images/sport/sport"+(r.nextInt(3)+1)+"/";
 				step = 0;initImageNumber();initImage();
 			}
 		}
