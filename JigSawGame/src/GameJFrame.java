@@ -5,24 +5,24 @@ import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import java.awt.event.*;
 
-public class GameJFrame extends JFrame implements KeyListener,ActionListener{
-	int[][] imageNumberArr = new int[4][4];
-	int[][] winArr = new int[4][4];
-	int indexX=0;//Blank square position
-	int indexY=0;
-	String path = "/images/animal/animal1/";
-	int inversions = 0;
-	int blankFromBottom = -1;
-	int step = 0;
-	Random r = new Random();
+public class GameJFrame extends JFrame{
+	private int[][] imageNumberArr = new int[4][4];
+	private int[][] winArr = new int[4][4];
+	private int indexX=0;//Blank square position
+	private int indexY=0;
+	private String path = "/images/animal/animal1/";
+	private int inversions = 0;
+	private int blankFromBottom = -1;
+	private int step = 0;
+	private Random r = new Random();
 	
-	JMenuItem replayItem = new JMenuItem("Replay");
+	private JMenuItem replayItem = new JMenuItem("Replay");
 	//JMenuItem reLoginItem = new JMenuItem("Relogin");
-	JMenuItem closeItem = new JMenuItem("Close game");
-	JMenuItem aboutItem = new JMenuItem("About me");
-	JMenuItem changeAnimal = new JMenuItem("Animals");
-	JMenuItem changeGirl = new JMenuItem("Girls");
-	JMenuItem changeSport = new JMenuItem("Sports");
+	private JMenuItem closeItem = new JMenuItem("Close game");
+	private JMenuItem aboutItem = new JMenuItem("About me");
+	private JMenuItem changeAnimal = new JMenuItem("Animals");
+	private JMenuItem changeGirl = new JMenuItem("Girls");
+	private JMenuItem changeSport = new JMenuItem("Sports");
 	
 	public GameJFrame(){
 		initJFrame();
@@ -34,12 +34,12 @@ public class GameJFrame extends JFrame implements KeyListener,ActionListener{
 	
 	private void initJFrame(){
 		this.setSize(603,680);
-		this.setTitle("Puzzle Game V1.1");
+		this.setTitle("Puzzle Game V1.2");
 		this.setAlwaysOnTop(true);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(3);
 		this.setLayout(null);
-		this.addKeyListener(this);
+		this.addKeyListener(new KeyboardController());
 	}
 	
 	private void initJMenuBar(){
@@ -51,20 +51,23 @@ public class GameJFrame extends JFrame implements KeyListener,ActionListener{
 		jmb.add(aboutMenu);
 		
 		fuctionMenu.add(changeImage);
-		changeImage.add(changeAnimal);
-		changeImage.add(changeGirl);
-		changeImage.add(changeSport);
 		fuctionMenu.add(replayItem);
 		//fuctionMenu.add(reLoginItem);
 		fuctionMenu.add(closeItem);
-		changeAnimal.addActionListener(this);changeAnimal.setActionCommand("changeAnimal");
-		changeGirl.addActionListener(this);changeGirl.setActionCommand("changeGirl");
-		changeSport.addActionListener(this);changeSport.setActionCommand("changeSport");
-		replayItem.addActionListener(this);replayItem.setActionCommand("replay");
-		closeItem.addActionListener(this);closeItem.setActionCommand("close");
+		
+		changeImage.add(changeAnimal);
+		changeImage.add(changeGirl);
+		changeImage.add(changeSport);
 		
 		aboutMenu.add(aboutItem);
-		aboutItem.addActionListener(this);aboutItem.setActionCommand("about");
+		
+		MenuController menuController = new MenuController();
+		changeAnimal.addActionListener(menuController);changeAnimal.setActionCommand("changeAnimal");
+		changeGirl.addActionListener(menuController);changeGirl.setActionCommand("changeGirl");
+		changeSport.addActionListener(menuController);changeSport.setActionCommand("changeSport");
+		replayItem.addActionListener(menuController);replayItem.setActionCommand("replay");
+		closeItem.addActionListener(menuController);closeItem.setActionCommand("close");
+		aboutItem.addActionListener(menuController);aboutItem.setActionCommand("about");
 		
 		this.setJMenuBar(jmb);
 	}
@@ -98,8 +101,8 @@ public class GameJFrame extends JFrame implements KeyListener,ActionListener{
 		if ((blankFromBottom % 2)==(inversions % 2)){//Unsolvable situation
 			int temp1,temp2;
 			do {
-				temp1 = r.nextInt(16);
-				temp2 = r.nextInt(16);
+				temp1 = r.nextInt(15);
+				temp2 = temp1+1;
 			} while (temp1 == temp2 || tempArr[temp1] == 0 || tempArr[temp2] == 0);
 			int temp = tempArr[temp1];
 			tempArr[temp1] = tempArr[temp2];
@@ -113,7 +116,6 @@ public class GameJFrame extends JFrame implements KeyListener,ActionListener{
 			}
 			imageNumberArr[i / 4][i % 4] = tempArr[i];
 		}
-
 	}
 	
 	private void initImage(){
@@ -145,7 +147,109 @@ public class GameJFrame extends JFrame implements KeyListener,ActionListener{
 		this.getContentPane().repaint();
 	}
 	
-	public boolean chechWin(){
+	private class MenuController implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e){
+			String command = e.getActionCommand();
+			switch (command){
+				case "replay" -> {step = 0;initImageNumber();initImage();}
+				case "close"  -> {System.exit(0);}
+				case "about"  -> {
+					JDialog jdl = new JDialog();
+					JLabel jlb = new JLabel(new ImageIcon(getClass().getResource("/images/about.png")));
+					jlb.setBounds(0,0,250,250);
+					jdl.getContentPane().add(jlb);
+					jdl.setSize(344,344);
+					jdl.setAlwaysOnTop(true);
+					jdl.setLocationRelativeTo(null);
+					jdl.setModal(true);
+					jdl.setVisible(true);
+				}
+				case "changeAnimal" -> {
+					path = "/images/animal/animal"+(r.nextInt(3)+1)+"/";
+					step = 0;initImageNumber();initImage();
+				}
+				case "changeGirl" -> {
+					path = "/images/girl/girl"+(r.nextInt(3)+1)+"/";
+					step = 0;initImageNumber();initImage();
+				}
+				case "changeSport" -> {
+					path = "/images/sport/sport"+(r.nextInt(3)+1)+"/";
+					step = 0;initImageNumber();initImage();
+				}
+			}	
+		}
+	}
+	
+	private class KeyboardController implements KeyListener {
+		@Override
+		public void keyTyped(KeyEvent e){
+		
+		}
+	
+		@Override
+		public void keyPressed(KeyEvent e){
+			if(chechWin()){
+				return;
+			}
+			if(e.getKeyCode()==65){
+				showAllImage();
+			}
+		}
+	
+		@Override
+		public void keyReleased(KeyEvent e){
+			if(chechWin()){
+				return;
+			}
+			switch (e.getKeyCode()){//left:37 up:38 right:39 down:40
+				case 37 -> {
+					if (indexX == 0){
+						return;
+					}
+					imageNumberArr[indexY][indexX]=imageNumberArr[indexY][indexX-1];imageNumberArr[indexY][indexX-1]=0;indexX--;step++;initImage();
+					}
+				case 38 -> {
+					if (indexY == 0){
+						return;
+					}
+					imageNumberArr[indexY][indexX]=imageNumberArr[indexY-1][indexX];imageNumberArr[indexY-1][indexX]=0;indexY--;step++;initImage();
+					}
+				case 39 -> {
+					if (indexX == 3){
+						return;
+					}
+					imageNumberArr[indexY][indexX]=imageNumberArr[indexY][indexX+1];imageNumberArr[indexY][indexX+1]=0;indexX++;step++;initImage();
+					}
+				case 40 -> {
+					if (indexY == 3){
+						return;
+					}
+					imageNumberArr[indexY][indexX]=imageNumberArr[indexY+1][indexX];imageNumberArr[indexY+1][indexX]=0;indexY++;step++;initImage();
+					}
+				case 65 -> {
+					initImage();
+				}
+			}
+		}
+
+		private void showAllImage() {
+			getContentPane().removeAll();
+			JLabel all = new JLabel(new ImageIcon(getClass().getResource(path+"all.jpg")));
+			all.setBounds(83,134,420,420);
+			getContentPane().add(all);
+			JLabel background = new JLabel(new ImageIcon(getClass().getResource("/images/background.png")));
+			background.setBounds(40,40,508,560);
+			getContentPane().add(background);
+			getContentPane().repaint();
+		}
+	}
+	
+//	public class MouseController implements MouseListener, MouseMotionListener {
+		
+//	}
+
+	private boolean chechWin(){
 		for (int y=0;y<imageNumberArr.length;y++){
 			for(int x=0;x<imageNumberArr[y].length;x++){
 				if (imageNumberArr[y][x] != winArr[y][x]){
@@ -154,94 +258,5 @@ public class GameJFrame extends JFrame implements KeyListener,ActionListener{
 			}
 		}
 		return true;
-	}
-	
- 	@Override
-	public void keyTyped(KeyEvent e){
-		
-	}
-	
-	@Override
-	public void keyPressed(KeyEvent e){
-		if(chechWin()){
-			return;
-		}
-		if(e.getKeyCode()==65){
-			this.getContentPane().removeAll();
-			JLabel all = new JLabel(new ImageIcon(getClass().getResource(path+"all.jpg")));
-			all.setBounds(83,134,420,420);
-			this.getContentPane().add(all);
-			JLabel background = new JLabel(new ImageIcon(getClass().getResource("/images/background.png")));
-			background.setBounds(40,40,508,560);
-			this.getContentPane().add(background);
-			this.getContentPane().repaint();
-		}
-	}
-	
-	@Override
-	public void keyReleased(KeyEvent e){
-		if(chechWin()){
-			return;
-		}
-		switch (e.getKeyCode()){//left:37 up:38 right:39 down:40
-			case 37 -> {
-				if (indexX == 0){
-					return;
-				}
-				imageNumberArr[indexY][indexX]=imageNumberArr[indexY][indexX-1];imageNumberArr[indexY][indexX-1]=0;indexX--;step++;initImage();
-				}
-			case 38 -> {
-				if (indexY == 0){
-					return;
-				}
-				imageNumberArr[indexY][indexX]=imageNumberArr[indexY-1][indexX];imageNumberArr[indexY-1][indexX]=0;indexY--;step++;initImage();
-				}
-			case 39 -> {
-				if (indexX == 3){
-					return;
-				}
-				imageNumberArr[indexY][indexX]=imageNumberArr[indexY][indexX+1];imageNumberArr[indexY][indexX+1]=0;indexX++;step++;initImage();
-				}
-			case 40 -> {
-				if (indexY == 3){
-					return;
-				}
-				imageNumberArr[indexY][indexX]=imageNumberArr[indexY+1][indexX];imageNumberArr[indexY+1][indexX]=0;indexY++;step++;initImage();
-				}
-			case 65 -> {
-				initImage();
-			}
-		}
-	}
-	
-	@Override
-	public void actionPerformed(ActionEvent e){
-		switch (e.getActionCommand()){
-			case "replay" -> {step = 0;initImageNumber();initImage();}
-			case "close"  -> {System.exit(0);}
-			case "about"  -> {
-				JDialog jdl = new JDialog();
-				JLabel jlb = new JLabel(new ImageIcon(getClass().getResource("/images/about.png")));
-				jlb.setBounds(0,0,250,250);
-				jdl.getContentPane().add(jlb);
-				jdl.setSize(344,344);
-				jdl.setAlwaysOnTop(true);
-				jdl.setLocationRelativeTo(null);
-				jdl.setModal(true);
-				jdl.setVisible(true);
-			}
-			case "changeAnimal" -> {
-				path = "/images/animal/animal"+(r.nextInt(3)+1)+"/";
-				step = 0;initImageNumber();initImage();
-			}
-			case "changeGirl" -> {
-				path = "/images/girl/girl"+(r.nextInt(3)+1)+"/";
-				step = 0;initImageNumber();initImage();
-			}
-			case "changeSport" -> {
-				path = "/images/sport/sport"+(r.nextInt(3)+1)+"/";
-				step = 0;initImageNumber();initImage();
-			}
-		}
 	}
 }
