@@ -4,6 +4,7 @@ import java.util.Random;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import java.awt.event.*;
+import java.awt.*;
 
 public class GameJFrame extends JFrame{
 	private int[][] imageNumberArr = new int[4][4];
@@ -11,8 +12,6 @@ public class GameJFrame extends JFrame{
 	private int indexX=0;//Blank square position
 	private int indexY=0;
 	private String path = "/images/animal/animal1/";
-	private int inversions = 0;
-	private int blankFromBottom = -1;
 	private int step = 0;
 	private Random r = new Random();
 	
@@ -23,7 +22,7 @@ public class GameJFrame extends JFrame{
 	private JMenuItem changeAnimal = new JMenuItem("Animals");
 	private JMenuItem changeGirl = new JMenuItem("Girls");
 	private JMenuItem changeSport = new JMenuItem("Sports");
-	
+
 	public GameJFrame(){
 		initJFrame();
 		initJMenuBar();
@@ -34,7 +33,7 @@ public class GameJFrame extends JFrame{
 	
 	private void initJFrame(){
 		this.setSize(603,680);
-		this.setTitle("Puzzle Game V1.2");
+		this.setTitle("Puzzle Game V2.0");
 		this.setAlwaysOnTop(true);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(3);
@@ -74,6 +73,8 @@ public class GameJFrame extends JFrame{
 	
 	private void initImageNumber(){
 		int[] tempArr = new int[16];
+		int inversions = 0;
+		int blankFromBottom = -1;
 		for (int i=0;i<tempArr.length;i++){
 			tempArr[i]=i;
 			winArr[i / 4][i % 4] = i+1;
@@ -85,19 +86,15 @@ public class GameJFrame extends JFrame{
 			tempArr[index] = tempArr[i];
 			tempArr[i] = temp;
 		}
-		
 		for (int i = 0; i < tempArr.length; i++) {
 			if (tempArr[i] == 0) {
 				blankFromBottom = 4-(i/4);
 			} else {
 				for (int j = i + 1; j < tempArr.length; j++) {
-					if (tempArr[j] != 0 && tempArr[i] > tempArr[j]) {
-                    inversions++;
-					}
+					if (tempArr[j] != 0 && tempArr[i] > tempArr[j]) {inversions++;}	
 				}
 			}
 		}
-		
 		if ((blankFromBottom % 2)==(inversions % 2)){//Unsolvable situation
 			int temp1,temp2;
 			do {
@@ -108,7 +105,6 @@ public class GameJFrame extends JFrame{
 			tempArr[temp1] = tempArr[temp2];
 			tempArr[temp2] = temp;
 		}
-		
 		for (int i=0;i<tempArr.length;i++){
 			if(tempArr[i]==0){
 				indexY=i/4;
@@ -126,7 +122,8 @@ public class GameJFrame extends JFrame{
 		JLabel tips = new JLabel("Press A to preview image.");
 		tips.setBounds(400,30,200,20);
 		this.getContentPane().add(tips);
-		if(chechWin()){
+		MouseController mouseController = new MouseController();
+		if(checkWin()){
 			JLabel winJLable = new JLabel(new ImageIcon(getClass().getResource("/images/win.png")));
 			winJLable.setBounds(203,283,197,73);
 			this.getContentPane().add(winJLable);
@@ -134,8 +131,14 @@ public class GameJFrame extends JFrame{
 		for (int y=0;y<4;y++){
 			for (int x=0;x<4;x++){	
 			JLabel jlb;
-			if(imageNumberArr[y][x]!=0){jlb = new JLabel(new ImageIcon(getClass().getResource(path+imageNumberArr[y][x]+".jpg")));}
-			else{jlb = new JLabel();}
+			if(imageNumberArr[y][x]!=0){
+				jlb = new JLabel(new ImageIcon(getClass().getResource(path+imageNumberArr[y][x]+".jpg")));
+				jlb.addMouseListener(mouseController);
+                //jlb.addMouseMotionListener(mouseController);//Implement the dragging animation
+				if (isAdjacentToBlank(x,y) && !checkWin()){
+					jlb.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				}
+			}else{jlb = new JLabel();}
 			jlb.setBounds(105*x+83,105*y+134,105,105);
 			jlb.setBorder(new BevelBorder(1));
 			this.getContentPane().add(jlb);
@@ -183,50 +186,34 @@ public class GameJFrame extends JFrame{
 	
 	private class KeyboardController implements KeyListener {
 		@Override
-		public void keyTyped(KeyEvent e){
-		
-		}
-	
+		public void keyTyped(KeyEvent e){}
+
 		@Override
 		public void keyPressed(KeyEvent e){
-			if(chechWin()){
-				return;
-			}
-			if(e.getKeyCode()==65){
-				showAllImage();
-			}
+			if(checkWin()) return;
+			if(e.getKeyCode()==65) {showAllImage();}
 		}
-	
+
 		@Override
 		public void keyReleased(KeyEvent e){
-			if(chechWin()){
-				return;
-			}
+			if(checkWin()) return;
 			switch (e.getKeyCode()){//left:37 up:38 right:39 down:40
 				case 37 -> {
-					if (indexX == 0){
-						return;
-					}
-					imageNumberArr[indexY][indexX]=imageNumberArr[indexY][indexX-1];imageNumberArr[indexY][indexX-1]=0;indexX--;step++;initImage();
-					}
+					if (indexX == 0) return;
+					swapSquares(indexX,indexY,indexX-1,indexY);indexX--;step++;initImage();
+				}
 				case 38 -> {
-					if (indexY == 0){
-						return;
-					}
-					imageNumberArr[indexY][indexX]=imageNumberArr[indexY-1][indexX];imageNumberArr[indexY-1][indexX]=0;indexY--;step++;initImage();
-					}
+					if (indexY == 0) return;
+					swapSquares(indexX,indexY,indexX,indexY-1);indexY--;step++;initImage();
+				}
 				case 39 -> {
-					if (indexX == 3){
-						return;
-					}
-					imageNumberArr[indexY][indexX]=imageNumberArr[indexY][indexX+1];imageNumberArr[indexY][indexX+1]=0;indexX++;step++;initImage();
-					}
+					if (indexX == 3) return;
+					swapSquares(indexX,indexY,indexX+1,indexY);indexX++;step++;initImage();
+				}
 				case 40 -> {
-					if (indexY == 3){
-						return;
-					}
-					imageNumberArr[indexY][indexX]=imageNumberArr[indexY+1][indexX];imageNumberArr[indexY+1][indexX]=0;indexY++;step++;initImage();
-					}
+					if (indexY == 3) return;
+					swapSquares(indexX,indexY,indexX,indexY+1);indexY++;step++;initImage();
+				}
 				case 65 -> {
 					initImage();
 				}
@@ -245,11 +232,77 @@ public class GameJFrame extends JFrame{
 		}
 	}
 	
-//	public class MouseController implements MouseListener, MouseMotionListener {
+	private class MouseController implements MouseListener {
+		private int startX, startY;
+		private int pressedX, pressedY;
+		private JLabel pressedLabel;
 		
-//	}
+		@Override
+		public void mousePressed(MouseEvent e){
+			if (checkWin()) return;
+			Component comp = e.getComponent();
+			if (comp instanceof JLabel){
+				JLabel label = (JLabel) comp;
+				if (label.getIcon()==null) return;
+				int x = (label.getX()-83)/105;
+				int y = (label.getY()-134)/105;
+				if (!isAdjacentToBlank(x, y)) return;
+				startX = e.getXOnScreen();
+				startY = e.getYOnScreen();
+				pressedX = x;
+				pressedY = y;
+				pressedLabel = label;
+				label.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+			}
+		}
+		
+		@Override
+		public void mouseReleased(MouseEvent e){
+			if (pressedLabel != null) {pressedLabel.setBorder(new BevelBorder(1));}
+			if (pressedLabel == null) return;
+			int endX = e.getXOnScreen();
+			int endY = e.getYOnScreen();
+			int deltaX = endX - startX;
+			int deltaY = endY - startY;
+			int distance = Math.max(Math.abs(deltaX), Math.abs(deltaY));
+			if (distance < 50) return;//Cursor movement threshold
+			if (!isAdjacentToBlank(pressedX, pressedY)) return;//check again
+			if (Math.abs(deltaX) > Math.abs(deltaY)) {//want to move horizontally or vertically
+				if (pressedX < indexX && deltaX > 0) {
+					swapSquares(pressedX, pressedY, indexX, indexY);indexX--;step++;initImage();	
+				} else if (pressedX > indexX && deltaX < 0) {
+					swapSquares(pressedX, pressedY, indexX, indexY);indexX++;step++;initImage();	
+				}
+			} else {
+				if (pressedY < indexY && deltaY > 0) {
+					swapSquares(pressedX, pressedY, indexX, indexY);indexY--;step++;initImage();	
+				} else if (pressedY > indexY && deltaY < 0) {
+					swapSquares(pressedX, pressedY, indexX, indexY);indexY++;step++;initImage();	
+				}
+			}
+		}
 
-	private boolean chechWin(){
+		@Override
+		public void mouseEntered(MouseEvent e) {}
+
+		@Override
+		public void mouseClicked(MouseEvent e) {}
+
+		@Override
+		public void mouseExited(MouseEvent e) {}
+	}
+	
+	private boolean isAdjacentToBlank(int x, int y) {
+		return (Math.abs(x - indexX) == 1 && y == indexY) || (Math.abs(y - indexY) == 1 && x == indexX);
+	}
+	
+	private void swapSquares(int x1, int y1, int x2, int y2) {
+		int temp = imageNumberArr[y1][x1];
+		imageNumberArr[y1][x1] = imageNumberArr[y2][x2];
+		imageNumberArr[y2][x2] = temp;
+	}
+	
+	private boolean checkWin(){
 		for (int y=0;y<imageNumberArr.length;y++){
 			for(int x=0;x<imageNumberArr[y].length;x++){
 				if (imageNumberArr[y][x] != winArr[y][x]){
